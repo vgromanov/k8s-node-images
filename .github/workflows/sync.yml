@@ -1,0 +1,67 @@
+name: Sync Kubernetes node-bins
+
+on:
+  schedule:
+    # Daily 06:15 UTC
+    - cron: "15 6 * * *"
+  workflow_dispatch:
+    inputs:
+      versions:
+        description: "Optional space-separated versions (e.g. v1.36.2). Empty = top-3 stable minors."
+        required: false
+        default: ""
+      force:
+        description: "Rebuild/push even if GHCR tag already exists"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install crane
+        uses: imjasonh/setup-crane@v0.4
+
+      - name: Sync top-3 (or forced) releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          FORCE_VERSIONS: ${{ inputs.versions }}
+          SKIP_IF_EXISTS: ${{ inputs.force == true && 'false' || 'true' }}
+          BIN_MIRROR_BASE: https://dl.k8s.io/release
+          REGISTRY: ghcr.io
+          REPO: vgromanov/k8s-node-bins
+        run: |
+          chmod +x scripts/watch-and-pack.sh
+          scripts/watch-and-pack.sh
+
+      - name: Ensure GHCR package is public
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Package may not exist until first successful push.
+          for i in 1 2 3 4 5; do
+            if gh api \
+              --method PUT \
+              -H "Accept: application/vnd.github+json" \
+              "/user/packages/container/k8s-node-bins/visibility" \
+              -f visibility=public; then
+              echo "Package visibility set to public"
+              exit 0
+            fi
+            echo "Package not ready yet (attempt ${i}); sleeping..."
+            sleep 5
+          done
+          echo "::warning::Could not set package visibility to public; set it manually in GitHub Packages UI"
+        continue-on-error: true

@@ -1,0 +1,5 @@
+# Ignore local tooling / dry-run leftovers
+*.tar
+*.tar.gz
+.tmp/
+.work/
