@@ -1,0 +1,19 @@
+version: v1.35.9
+platform: linux/amd64
+bin_mirror_base: https://dl.k8s.io/release
+binaries:
+  - name: kubectl
+    url: https://dl.k8s.io/release/v1.35.9/bin/linux/amd64/kubectl
+    sha512: 662ce5f590cb8b79be6bbb6a4e31523c64f4dd71aa7d6b8463ce7b74d4441de72991518ca869c86864e7368de9f1e9fd16e63cfac192e193dff3ad6ddb4c1060
+  - name: kubeadm
+    url: https://dl.k8s.io/release/v1.35.9/bin/linux/amd64/kubeadm
+    sha512: 77bbaebd80c12cbf48b0cc7f8918ac241d1f73564ee25536bfb268b78497baf92e59cd04675e3790bcd3a5752196259c1073ad002a484d3da55186b8146f20b5
+  - name: kubectl-convert
+    url: https://dl.k8s.io/release/v1.35.9/bin/linux/amd64/kubectl-convert
+    sha512: 13ddff38460fecbcbdaf61c5de4d6c147a25dd8af66a19bfb329b6f789c2f643a36323dddae75b642f65f60885663b60aa7791e50b341976ef84417b9445d411
+  - name: kubelet
+    url: https://dl.k8s.io/release/v1.35.9/bin/linux/amd64/kubelet
+    sha512: e173c461e6932bc73c98075c02b972d35dbf3150e4c3ffe811d64d40dca477dfa3055adedee087f92467cf6a72d16849d8f25f95c9bc9cc4b83e8b87f5bdb9a4
+  - name: kube-proxy
+    url: https://dl.k8s.io/release/v1.35.9/bin/linux/amd64/kube-proxy
+    sha512: 789a10de713da7c3c2690bb76fef01b0c67dec5970723f297ddfb89748c9c5472e0ff38136bcec52b93991100dab10cd45bd39965829e1b52490a77073f3d08c
